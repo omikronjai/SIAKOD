@@ -1,0 +1,66 @@
+public class Main {
+    private int top;
+    private int[] items;
+    
+    public Main(int capacity) {
+        this.top = -1;
+        this.items = new int[capacity];
+    }
+    
+    public void push(int item) {
+        if (top == items.length - 1) {
+            System.out.println("Стек переполнен");
+            return;
+        }
+        items[++top] = item;
+    }
+    
+    public Integer pop() {
+        if (isEmpty()) {
+            return null;
+        }
+        return items[top--];
+    }
+    
+    public Integer peek() {
+        if (isEmpty()) {
+            return null;
+        }
+        return items[top];
+    }
+    
+    public boolean isEmpty() {
+        return top == -1;
+    }
+    
+    public int size() {
+        return top + 1;
+    }
+    
+    public void display() {
+        if (isEmpty()) {
+            System.out.println("Стек пуст");
+            return;
+        }
+        for (int i = top; i >= 0; i--) {
+            System.out.println(items[i]);
+        }
+    }
+    
+    public static void main(String[] args) {
+        Main stack = new Main(10);
+        
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        
+        System.out.println("Стек:");
+        stack.display();
+        
+        System.out.println("Извлеченный элемент: " + stack.pop());
+        
+        System.out.println("Стек после извлечения:");
+        stack.display();
+
+    }
+}
