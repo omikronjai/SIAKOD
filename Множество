@@ -1,0 +1,199 @@
+class MySet<T>
+{
+    private Object[] elements;
+    private int size;
+    private int capacity;
+
+    public MySet(int capacity)
+    {
+        this.capacity = capacity;
+        elements = new Object[capacity];
+        size = 0;
+    }
+
+    public boolean contains(T elem)
+    {
+        for(int i = 0; i < size; i++)
+        {
+            if(elem == null && elements[i] == null)
+            {
+                return true;
+            }
+            if(elem != null && elem.equals(elements[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean add(T elem)
+    {
+        if(contains(elem))
+        {
+            return false;
+        }
+        
+        if(size == capacity)
+        {
+            capacity = capacity * 2;
+            Object[] newElements = new Object[capacity];
+            for(int i = 0; i < size; i++)
+            {
+                newElements[i] = elements[i];
+            }
+            elements = newElements;
+        }
+        
+        elements[size] = elem;
+        size++;
+        return true;
+    }
+
+    public boolean remove(T elem)
+    {
+        int index = -1;
+        for(int i = 0; i < size; i++)
+        {
+            if(elem == null && elements[i] == null)
+            {
+                index = i;
+                break;
+            }
+            if(elem != null && elem.equals(elements[i]))
+            {
+                index = i;
+                break;
+            }
+        }
+        
+        if(index == -1)
+        {
+            return false;
+        }
+        
+        for(int i = index; i < size - 1; i++)
+        {
+            elements[i] = elements[i + 1];
+        }
+        
+        size--;
+        elements[size] = null;
+        return true;
+    }
+
+    public int size()
+    {
+        return size;
+    }
+
+    public boolean isEmpty()
+    {
+        return size == 0;
+    }
+
+    public void clear()
+    {
+        elements = new Object[capacity];
+        size = 0;
+    }
+
+    public void display()
+    {
+        System.out.print("[");
+        if(size > 0)
+        {
+            for(int i = 0; i < size - 1; i++)
+            {
+                System.out.print(elements[i] + ", ");
+            }
+            System.out.print(elements[size - 1]);
+        }
+        System.out.print("]");
+    }
+
+    public MySet<T> union(MySet<T> other)
+    {
+        MySet<T> result = new MySet<>(this.size + other.size);
+        
+        for(int i = 0; i < this.size; i++)
+        {
+            result.add((T)this.elements[i]);
+        }
+        
+        for(int i = 0; i < other.size; i++)
+        {
+            result.add((T)other.elements[i]);
+        }
+        
+        return result;
+    }
+
+    public MySet<T> intersection(MySet<T> other)
+    {
+        MySet<T> result = new MySet<>(Math.min(this.size, other.size));
+        
+        for(int i = 0; i < this.size; i++)
+        {
+            if(other.contains((T)this.elements[i]))
+            {
+                result.add((T)this.elements[i]);
+            }
+        }
+        
+        return result;
+    }
+
+    public MySet<T> difference(MySet<T> other)
+    {
+        MySet<T> result = new MySet<>(this.size);
+        
+        for(int i = 0; i < this.size; i++)
+        {
+            if(!other.contains((T)this.elements[i]))
+            {
+                result.add((T)this.elements[i]);
+            }
+        }
+        
+        return result;
+    }
+
+    public static void main(String[] args)
+    {
+        MySet<Integer> set1 = new MySet<>(5);
+        
+        set1.add(1);
+        set1.add(2);
+        set1.add(3);
+        set1.add(2);
+        System.out.print("set1: ");
+        set1.display();
+        System.out.println();
+        
+        MySet<Integer> set2 = new MySet<>(5);
+        
+        set2.add(4);
+        set2.add(5);
+        set2.add(6);
+        set2.add(7);
+        set2.remove(6);
+        set2.add(2);
+        set2.add(1);
+        System.out.print("set2: ");
+        set2.display();
+        System.out.println();
+        
+        System.out.print("Union: ");
+        set1.union(set2).display();
+        System.out.println();
+        
+        System.out.print("Intersection: ");
+        set1.intersection(set2).display();
+        System.out.println();
+        
+        System.out.print("Difference: ");
+        set1.difference(set2).display();
+        System.out.println();
+    }
+}
