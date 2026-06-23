@@ -1,0 +1,240 @@
+import java.util.*;
+
+class MyBinaryTree<T extends Comparable<T>>
+{
+    private class Node
+    {
+        private T data;
+        private Node right;
+        private Node left;
+        
+        Node(T data)
+        {
+            this.data = data;
+            right = null;
+            left = null;
+        }
+    }
+    
+    private int size;
+    private Node root;
+    
+    public MyBinaryTree()
+    {
+        root = null;
+        size = 0;
+    }
+    
+    public void add(T value)
+    {
+        root = addNode(root, value);
+    }
+    
+    private Node addNode(Node current, T value)
+    {
+        if(current == null)
+        {
+            size++;
+            return new Node(value);
+        }
+        
+        if(value.compareTo(current.data) < 0)
+        {
+            current.left = addNode(current.left, value);
+        }
+        else if(value.compareTo(current.data) > 0)
+        {
+            current.right = addNode(current.right, value);
+        }
+        
+        return current;
+    }
+    
+    public boolean contains(T value)
+    {
+        return searchNode(root, value);
+    }
+    
+    private boolean searchNode(Node current, T value)
+    {
+        if(current == null)
+        {
+            return false;
+        }
+        
+        if(value.compareTo(current.data) == 0)
+        {
+            return true;
+        }
+        
+        if(value.compareTo(current.data) < 0)
+        {
+            return searchNode(current.left, value);
+        }
+        else
+        {
+            return searchNode(current.right, value);
+        }
+    }
+    
+    public boolean remove(T value)
+    {
+        if(!contains(value))
+        {
+            return false;
+        }
+        
+        root = removeNode(root, value);
+        size--;
+        return true;
+    }
+    
+    private Node removeNode(Node current, T value)
+    {
+        if(current == null)
+        {
+            return null;
+        }
+        
+        if(value.compareTo(current.data) == 0)
+        {
+            if(current.right == null)
+            {
+                return current.left;
+            }
+            
+            if(current.right.left == null)
+            {
+                current.right.left = current.left;
+                return current.right;
+            }
+            
+            Node parent = current.right;
+            Node minNode = current.right.left;
+            
+            while(minNode.left != null)
+            {
+                parent = minNode;
+                minNode = minNode.left;
+            }
+            
+            parent.left = minNode.right;
+            minNode.left = current.left;
+            minNode.right = current.right;
+            
+            return minNode;
+        }
+        else if(value.compareTo(current.data) < 0)
+        {
+            current.left = removeNode(current.left, value);
+        }
+        else
+        {
+            current.right = removeNode(current.right, value);
+        }
+        
+        return current;
+    }
+    
+    public int count()
+    {
+        return size;
+    }
+    
+    public void clear()
+    {
+        root = null;
+        size = 0;
+    }
+    
+    public void PreOrder()
+    {
+        printPreOrder(root);
+        System.out.println();
+    }
+    
+    private void printPreOrder(Node node)
+    {
+        if(node != null)
+        {
+            System.out.print(node.data + " ");
+            printPreOrder(node.left);
+            printPreOrder(node.right);
+        }
+    }
+    
+    public void PostOrder()
+    {
+        printPostOrder(root);
+        System.out.println();
+    }
+    
+    private void printPostOrder(Node node)
+    {
+        if(node != null)
+        {
+            printPostOrder(node.left);
+            printPostOrder(node.right);
+            System.out.print(node.data + " ");
+        }
+    }
+    
+    public void InOrder()
+    {
+        printInOrder(root);
+        System.out.println();
+    }
+    
+    private void printInOrder(Node node)
+    {
+        if(node != null)
+        {
+            printInOrder(node.left);
+            System.out.print(node.data + " ");
+            printInOrder(node.right);
+        }
+    }
+    
+    public static void main(String[] args)
+    {
+        MyBinaryTree<Integer> tree = new MyBinaryTree<>();
+        
+        int[] elements = {50, 30, 70, 20, 40, 60, 80, 35, 45, 55, 65};
+        for(int element : elements)
+        {
+            tree.add(element);
+        }
+        
+        System.out.println("Размер дерева: " + tree.count());
+        
+        System.out.println("\nОбходы:");
+        System.out.print("Прямой (Pre-order): ");
+        tree.PreOrder();
+        
+        System.out.print("Симметричный (In-order): ");
+        tree.InOrder();
+        
+        System.out.print("Обратный (Post-order): ");
+        tree.PostOrder();
+        
+        System.out.println("\nПоиск:");
+        System.out.println("Содержит 40? " + tree.contains(40));
+        System.out.println("Содержит 100? " + tree.contains(100));
+        
+        System.out.println("\nУдаляем 20 (лист):");
+        tree.remove(20);
+        tree.InOrder();
+        
+        System.out.println("\nУдаляем 30 (узел с одним потомком):");
+        tree.remove(30);
+        tree.InOrder();
+        
+        System.out.println("\nУдаляем 50 (корень с двумя потомками):");
+        tree.remove(50);
+        tree.InOrder();
+        
+        System.out.println("\nОчищаем дерево: ");
+        tree.clear();
+        tree.InOrder();
+    }
+}
